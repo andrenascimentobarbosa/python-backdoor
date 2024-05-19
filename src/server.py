@@ -4,7 +4,6 @@
 
 import socket
 import os
-from defs import *
 
 host = '127.0.0.1'
 port = 8080
@@ -44,24 +43,6 @@ def shell():
                 client.send(comm.encode())
             elif comm[:4] == 'open':
                 client.send(comm.encode())
-            elif comm[:3] == 'get':
-                try:
-                    filename = comm.split()[1]
-                    download_file(client, filename)  
-                    print('file received and saved!')
-                except socket.error as e:
-                    print_error(e)
-                except Exception as e:
-                    print_error(e)
-            elif comm[:2] == 'up':
-                try:
-                    filename = comm.split()[1]
-                    upload_file(client, filename)
-                    print('file sended and saved!')
-                except socket.error as e:
-                    print_error(e)
-                except Exception as e:
-                    print_error(e)
             else:
                 try:
                     client.send(comm.encode())

