@@ -1,12 +1,32 @@
+# modules
+
 import socket
 import os
 import subprocess
+
+# definitions
 
 
 def send_error(msg):
     err_msg = f'[From client] {msg}'
     client.send(err_msg.encode())
 
+def download(file):
+    with open(file, 'wb') as f:
+        chunk = client.recv(1024)
+        if not chunk:
+            break
+        f.write(chunk)
+
+def upload(file):
+    with open(file, 'rb') as f:
+        while True:
+            chunk = f.read(1023)
+            if not chunk:
+                break
+            client.sendall(chunk)
+
+# main program
 
 host = '127.0.0.1'
 port = 8080
